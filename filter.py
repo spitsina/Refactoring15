@@ -24,11 +24,16 @@ def MakeImageBWMosaic(mosaic=10, grayStep=50, inputImage="img2.jpg", output="res
 
 
     def FindBright():
+        """
+        Суммирование по яркости в пределах прямоугольника x\y
+        :return:
+        """
         # что-то я забыл, как избавиться от for и всё сделать через генератор
         answer = 0
         for pixelX in range(i, i + x):
             for pixelY in range(j, j + y):
                 answer += sum(image[pixelX][pixelY])
+
 
         return answer // (x * y)
 
