@@ -33,6 +33,9 @@ def MakeImageBWMosaic(mosaic=10, grayStep=50, inputImage="img2.jpg", output="res
         return answer // (x * y)
 
     def BuildImage():
+        """
+        редактирует файл изображения в прямоугольнике x/y:
+        """
         # так же и тут, как-то не могу вспомнить, как сделать простой срез по range
         for pixelX in range(i, i + x):
             for pixelY in range(j, j + y):
@@ -62,3 +65,4 @@ def MakeImageBWMosaic(mosaic=10, grayStep=50, inputImage="img2.jpg", output="res
 
 
 MakeImageBWMosaic(0, 50)
+
