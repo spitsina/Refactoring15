@@ -1,28 +1,73 @@
 from PIL import Image
 import numpy as np
-img = Image.open("img2.jpg")
-arr = np.array(img)
-a = len(arr)
-a1 = len(arr[1])
-i = 0
-while i < a - 11:
-    j = 0
-    while j < a1 - 11:
-        s = 0
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                n1 = arr[n][n1][0]
-                n2 = arr[n][n1][1]
-                n3 = arr[n][n1][2]
-                M = n1 + n2 + n3
-                s += M
-        s = int(s // 100)
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                arr[n][n1][0] = int(s // 50) * 50
-                arr[n][n1][1] = int(s // 50) * 50
-                arr[n][n1][2] = int(s // 50) * 50
-        j = j + 10
-    i = i + 10
-res = Image.fromarray(arr)
-res.save('res.jpg')
+
+
+def MakeImageBWMosaic(mosaic=10, grayStep=50, inputImage="img2.jpg", output="res"):
+    """
+        название
+       :param mosaic: Размер "Пикселя"
+       :param grayStep: - больше, меньше градации
+       :param inputImage: исходное имя файла
+       :param output: имя итогого файла, без разрешения
+       :return: Изображение в ЧБ и мозайкой
+       :raise grayStep и mosaic не должны быть равны нулю
+    """
+    if mosaic == 0 or grayStep == 0:
+        raise Exception("Mosaic or GrayStep can't be 0")
+
+    def Init():
+        image = np.array(Image.open(inputImage))
+        x = len(image)
+        y = len(image[1])
+        return image, x, y
+
+
+
+    def FindBright():
+        """
+        Суммирование по яркости в пределах прямоугольника x\y
+        :return:
+        """
+        # что-то я забыл, как избавиться от for и всё сделать через генератор
+        answer = 0
+        for pixelX in range(i, i + x):
+            for pixelY in range(j, j + y):
+                answer += sum(image[pixelX][pixelY])
+
+
+        return answer // (x * y)
+
+    def BuildImage():
+        """
+        редактирует файл изображения в прямоугольнике x/y:
+        """
+        # так же и тут, как-то не могу вспомнить, как сделать простой срез по range
+        for pixelX in range(i, i + x):
+            for pixelY in range(j, j + y):
+                image[pixelX][pixelY][:] = bright // grayStep * grayStep / 3
+
+    def ExportToFile():
+        """
+        сохраняет изображение
+        """
+        answer = Image.fromarray(image)
+        answer.save(output + ".jpg")
+
+    image, imageLenX, imageLenY = Init()
+    bright = 0
+    i = 0
+    while i < imageLenX:
+        j = 0
+        x = imageLenX - i if i + mosaic > imageLenX else mosaic
+        while j < imageLenY:
+            y = imageLenY - j if j + mosaic > imageLenY else mosaic
+            bright = FindBright()
+            BuildImage()
+            j = j + mosaic
+        i = i + mosaic
+
+    ExportToFile()
+
+
+MakeImageBWMosaic(0, 50)
+
